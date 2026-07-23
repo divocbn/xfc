@@ -1,8 +1,10 @@
 add_library(xfc STATIC
     src/app.cpp
+    src/filesystem.cpp
     src/timer.cpp
 
     include/xfc/app.h
+    include/xfc/filesystem.h
     include/xfc/log.h
     include/xfc/numeric.h
     include/xfc/ptr.h

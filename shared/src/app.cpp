@@ -6,12 +6,28 @@
 #include "xfc/log.h"
 #include "xfc/timer.h"
 
+#ifdef _WIN32
+#include <windows.h>
+
+static void xfEnableConsoleColors()
+{
+    const HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    DWORD mode = 0;
+    if (output != INVALID_HANDLE_VALUE && GetConsoleMode(output, &mode))
+    {
+        SetConsoleMode(output, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    }
+}
+#endif
+
 xfApp::xfApp(std::string name, const s32 argc, char** argv)
     : m_Name(std::move(name))
-    , m_ArgCount(argc)
-    , m_Args(argv)
+    , m_Args(argv, argc)
 {
-    s_LogAppName = m_Name;
+#ifdef _WIN32
+    xfEnableConsoleColors();
+#endif
 }
 
 s32 xfApp::Run()
@@ -25,19 +41,4 @@ s32 xfApp::Run()
     XF_LOG("finished in {:.3f} ms", timer.GetElapsedTime());
 
     return result;
-}
-
-s32 xfApp::GetArgCount() const
-{
-    return m_ArgCount;
-}
-
-const char* xfApp::GetArg(const s32 index) const
-{
-    if (index < 0 || index >= m_ArgCount)
-    {
-        return nullptr;
-    }
-
-    return m_Args[index];
 }

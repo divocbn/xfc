@@ -7,7 +7,9 @@
 
 #include "xfc/numeric.h"
 
+#include <span>
 #include <string>
+#include <string_view>
 
 class xfApp
 {
@@ -20,15 +22,11 @@ public:
 protected:
     virtual s32 OnRun() = 0;
 
-    s32 GetArgCount() const;
+    [[nodiscard]]
+    std::string_view GetName() const { return m_Name; }
 
-    const char* GetArg(s32 index) const;
-
-private:
     std::string m_Name;
-
-    s32 m_ArgCount;
-    char** m_Args;
+    std::span<char*> m_Args;
 };
 
 #endif // XFC_APP_H
